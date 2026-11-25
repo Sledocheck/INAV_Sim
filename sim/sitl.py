@@ -198,7 +198,7 @@ class INAVSitl:
             self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self._sock.bind(("127.0.0.1", self.xp_port))
-            self._sock.settimeout(0.05)
+            self._sock.settimeout(0.005)
         except OSError as e:
             self.error = "UDP %d: %s" % (self.xp_port, e)
             self._close_sock()
