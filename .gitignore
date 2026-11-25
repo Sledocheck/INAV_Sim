@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+config.json
+logs/
+userdata/
+dist/
+build/
+*.zip
+sitl/sitl.log
+sitl/eeprom_cli.bin
