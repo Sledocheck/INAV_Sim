@@ -378,7 +378,9 @@ class SimView(QWidget):
                 stale=stale and sitl_ready)
         sitl = self.c.sitl
         hint = ""
-        if sitl is not None and not sitl.ready:
+        if getattr(self.c.aircraft, "crash", False):
+            hint = "КРЭШ\nR — сброс"
+        elif sitl is not None and not sitl.ready:
             hint = ("Инициализация INAV SITL…\n"
                     "Калибровка датчиков, ~10 секунд")
         elif self.c.paused:
@@ -414,6 +416,10 @@ class SimView(QWidget):
     def keyReleaseEvent(self, ev) -> None:
         self.c._keys.discard(ev.key())
         super().keyReleaseEvent(ev)
+
+    def focusOutEvent(self, ev) -> None:
+        self.c._keys.clear()
+        super().focusOutEvent(ev)
 
     def mousePressEvent(self, ev) -> None:
         self.setFocus()

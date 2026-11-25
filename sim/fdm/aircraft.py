@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-NAME = "skylock"
+NAME = "inav_sim"
 RHO0 = 1.225
 G = 9.81
 
@@ -192,11 +192,11 @@ def _xml(cfg, s: dict) -> str:
       <direction><x>1</x><y>0</y><z>0</z></direction>
     </force>"""
     return f"""<?xml version="1.0"?>
-<fdm_config name="SkyLock { _f(s['mass']) } kg" version="2.0" release="BETA">
+<fdm_config name="INAV Sim { _f(s['mass']) } kg" version="2.0" release="BETA">
   <fileheader>
-    <author>SkyLock PC simulator</author>
+    <author>INAV Sim</author>
     <filecreationdate>2026-11-19</filecreationdate>
-    <description>SkyLock airframe generated from preset</description>
+    <description>INAV Sim airframe generated from preset</description>
     <note>Generated model. Change the preset, not this file.</note>
   </fileheader>
 
@@ -272,7 +272,7 @@ def _xml(cfg, s: dict) -> str:
 
   <propulsion/>
 
-  <flight_control name="SkyLock FCS">
+  <flight_control name="INAV Sim FCS">
     <channel name="Pitch">
       <summer name="fcs/pitch-cmd-sum">
         <input>fcs/elevator-cmd-norm</input>
@@ -573,7 +573,7 @@ def _xml(cfg, s: dict) -> str:
 
 
 def write_aircraft(cfg, parent: Path) -> tuple[Path, dict]:
-    """Записать ``<parent>/aircraft/skylock/skylock.xml``. Вернуть путь и spec."""
+    """Записать ``<parent>/aircraft/inav_sim/inav_sim.xml``. Вернуть путь и spec."""
     spec = aircraft_spec(cfg)
     folder = Path(parent) / "aircraft" / NAME
     folder.mkdir(parents=True, exist_ok=True)

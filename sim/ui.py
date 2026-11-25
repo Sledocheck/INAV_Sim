@@ -202,7 +202,9 @@ class SettingsDialog(QDialog):
         self.speed.setValue(float(self.cfg.get("start_speed_m_s", 24.0)))
         form.addRow("Стартовая скорость", self.speed)
         hint = QLabel("SITL и EEPROM лежат в папке sitl/. EEPROM уже настроен:\n"
-                      "OSD включён, UART3 = MSP DisplayPort.")
+                      "OSD включён, UART3 = MSP DisplayPort.\n"
+                      "После смены путей/портов перезапустите INAV (F9).\n"
+                      "Порты MSP/OSD заданы EEPROM: UART2 = 5761, UART3 = 5762.")
         hint.setWordWrap(True)
         form.addRow(hint)
         return w

@@ -181,6 +181,19 @@ class INAVSitl:
         if not self.eeprom.is_file():
             self.error = "Не найден eeprom: %s" % self.eeprom
             return False
+        for port, name in ((self.msp_port, "MSP"), (self.osd_port, "OSD")):
+            if self._port_in_use(port):
+                # Порт мог остаться от только что остановленного SITL.
+                for _ in range(8):
+                    time.sleep(0.25)
+                    if not self._port_in_use(port):
+                        break
+                else:
+                    self.error = (
+                        "TCP-порт %d (%s) уже занят. Закройте другой INAV SITL "
+                        "(например, из SkyLock) или измените порты в настройках."
+                        % (port, name))
+                    return False
         try:
             self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -289,6 +302,8 @@ class INAVSitl:
             self.manual_armed = False
 
     def toggle_arm(self) -> None:
+        if not self.ready:
+            return
         self.auto_arm = False
         self.manual_armed = not self.manual_armed
 
@@ -483,7 +498,7 @@ class INAVSitl:
             else:
                 ch[4] = 1000
         else:
-            ch[4] = 1000 if self.manual_armed else 2000
+            ch[4] = 1000 if (self.manual_armed and self.ready) else 2000
         ch[5] = 1500 if self.mode == "AH" else 1000
         return [int(clamp(round(float(c)), 800, 2200)) for c in ch]
 
@@ -631,6 +646,21 @@ class INAVSitl:
             time.sleep(0.3)
 
     # ── служебное ───────────────────────────────────────────
+    @staticmethod
+    def _port_in_use(port: int) -> bool:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(0.15)
+        try:
+            s.connect(("127.0.0.1", int(port)))
+            return True
+        except OSError:
+            return False
+        finally:
+            try:
+                s.close()
+            except OSError:
+                pass
+
     def _close_sock(self) -> None:
         sock = self._sock
         self._sock = None

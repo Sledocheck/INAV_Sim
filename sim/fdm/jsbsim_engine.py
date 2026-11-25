@@ -92,7 +92,7 @@ class JSBSimEngine:
         import jsbsim  # noqa: PLC0415  (ленивый импорт: аддон необязателен)
 
         self._jsbsim = jsbsim
-        self._tmp = Path(tempfile.mkdtemp(prefix="skylock-jsbsim-"))
+        self._tmp = Path(tempfile.mkdtemp(prefix="inav-sim-jsbsim-"))
         atexit.register(shutil.rmtree, str(self._tmp), True)
         write_aircraft(self.cfg, self._tmp)
 
